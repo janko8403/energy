@@ -1,0 +1,28 @@
+// [Info: copied from beagle template]
+// Modify template colors
+// $primary:		#595BD4;
+// $danger:		    #FD3D39;
+// $warning:		#FFCB2F;
+// $success:		#53D86A;
+
+
+// Fonts
+@import url('https://fonts.bunny.net/css?family=Nunito');
+
+// Variables
+@import 'variables';
+
+// Misc
+@import 'misc';
+
+
+
+// Components
+@import 'components/add_conf_form';
+@import 'components/alert';
+
+// Bootstrap
+// @import 'bootstrap/scss/bootstrap';
+
+// Beagle template
+@import "beagle";
