@@ -40,81 +40,7 @@
         <div class="card card-table">
             <div class="card-header">Sterowanie</div>
                 <div class="card-body">
-                    <div class="table-responsive noSwipe">
-                        <table class="table table-striped table-hover">
-                            <thead>
-                                <tr>
-                                    <th style="width:4%;">
-                                        <div class="custom-control custom-control-sm custom-checkbox">
-                                            <input class="custom-control-input" type="checkbox" id="check1">
-                                            <label class="custom-control-label" for="check1"></label>
-                                        </div>
-                                    </th>
-                                    <th style="width:10%;">Nazwa</th>
-                                    <th style="width:10%;">Obszar</th>
-                                    <th style="width:15%;">Moc</th>
-                                    <th style="width:10%;">Generacja</th>
-                                    <th style="width:10%;">Akcja</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="custom-control custom-control-sm custom-checkbox">
-                                            <input class="custom-control-input" type="checkbox" id="check2">
-                                            <label class="custom-control-label" for="check2"></label>
-                                        </div>
-                                    </td>
-                                    <td><span>Nazwa 1</span></td>
-                                    <td> <span>Mława</span></td>
-                                    <td><span>20kVA</span></td>
-                                    <td><span>2.0.0</span></td>
-                                    <td class="text-right d-flex">
-                                        <a class="btn btn-space btn-secondary btn-xs mr-2 cursor-pointer">ON</a>
-                                        <a class="btn btn-space btn-secondary btn-xs mr-2 cursor-pointer">OFF</a>
-                                        <input class="form-control form-control-xs mr-3 input-range" type="number" value="100" max="100">
-                                        <a class="btn btn-space btn-secondary btn-xs mr-2 cursor-pointer">SET</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="custom-control custom-control-sm custom-checkbox">
-                                            <input class="custom-control-input" type="checkbox" id="check3">
-                                            <label class="custom-control-label" for="check3"></label>
-                                        </div>
-                                    </td>
-                                    <td><span>Nazwa 2</span></td>
-                                    <td> <span>Mława</span></td>
-                                    <td><span>20kVA</span></td>
-                                    <td><span>2.0.0</span></td>
-                                    <td class="text-right d-flex">
-                                        <a class="btn btn-space btn-secondary btn-xs mr-2 cursor-pointer">ON</a>
-                                        <a class="btn btn-space btn-secondary btn-xs mr-2 cursor-pointer">OFF</a>
-                                        <input class="form-control form-control-xs mr-3 input-range" type="number" value="100" max="100">
-                                        <a class="btn btn-space btn-secondary btn-xs mr-2 cursor-pointer">SET</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="custom-control custom-control-sm custom-checkbox">
-                                            <input class="custom-control-input" type="checkbox" id="check4">
-                                            <label class="custom-control-label" for="check4"></label>
-                                        </div>
-                                    </td>
-                                    <td><span>Nazwa 3</span></td>
-                                    <td> <span>Mława</span></td>
-                                    <td><span>20kVA</span></td>
-                                    <td><span>2.0.0</span></td>
-                                    <td class="text-right d-flex">
-                                        <a class="btn btn-space btn-secondary btn-xs mr-2 cursor-pointer">ON</a>
-                                        <a class="btn btn-space btn-secondary btn-xs mr-2 cursor-pointer">OFF</a>
-                                        <input class="form-control form-control-xs mr-3 input-range" type="number" value="100" max="100">
-                                        <a class="btn btn-space btn-secondary btn-xs mr-2 cursor-pointer">SET</a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    @include('admin.components.control_clients')
             </div>
         </div>
 
@@ -126,102 +52,24 @@
     <script src="{{ asset('admin/lib/chart.js') }}" type="text/javascript"></script>    
     <script type="text/javascript">
         $(document).ready(function(){
-            // measurment one min
-            
-            refreshId = setInterval(()=> {
-                getData();
-            }, 5000);
 
-            //const refresh = document.querySelector('.btn-refresh');
-            //refresh.addEventListener('click', function() {
-                //getData();
-            //})
-            function getData() {
-                var clients = {!! $clients !!};
+            var clients = {!! $clients !!}
 
-                for (let i = 0; i < clients.length; i++) {
-                    $.get('/last-power-value/'+clients[i].id,
-                        function(data) {
-
-                            var dataSetLabels = [];
-                            var dataSetValues = [];
-                            var dataSetDate = [];
-
-                            var lab = ['one', 't', 'r']
-
-                            Object.entries(data).forEach(entry=> {
-                                const [key, value] = entry;
-                                dataSetLabels.push(value.client_name);
-                                dataSetValues.push([value.last_power_value, value.client_name]);
-                                dataSetDate.push(value.requested_timestamp);
-                            });
-
-                            //oneMinuteChart.data.datasets[0].label[0] = 'one';
-                            //oneMinuteChart.update();
-                            //oneMinuteChart.data.labels = dataSetDate;
-
-
-                            
-                            
-
-                            console.log(dataSetValues);
-                            //oneMinuteChart.update();
-
-                            //oneMinuteChart.data.datasets.forEach((dataset) => {
-                                //dataset.data = dataSetValues;
-                            //});
-
-                            //console.log(dataSetLabels);
-                            //oneMinuteChart.data.labels.push(dataSetLabels);
-                            //oneMinuteChart.data.datasets.push(dataSetValues);
-                            //oneMinuteChart.data.datasets.forEach((dataset) => {
-                            //dataset.label = dataSetLabels;
-                            //});
-                            //oneMinuteChart.update();
-
-
-                        }
-                    );
-                }
+            var clientName = [];
+            for (c = 0; c < clients.length; c++) {
+                clientName.push(clients[c].nazwaOdbiorcy);
             }
+            console.log(clientName);
 
+            const refresh = document.querySelector('.btn-refresh');
+            refresh.addEventListener('click', function() {
+                console.log('click');
+                getData();
+                //oneMinuteChart.update();
+            });
 
             var labels = [];
-            var dataSets = [{
-                label: '1',
-                data: [1],
-                borderWidth:2
-            }];
-
-            const baseData = [{
-                location: "Apartment A",
-                color: "red",
-                set_data: [
-                    { month: 1, value: 3500 }, 
-                    { month: 2, value: 2700 }, 
-                    { month: 3, value: 1500 }
-                ]
-            },
-            {
-                location: "Apartment B",
-                color: "blue",
-                set_data: [
-                    { month: 1, value: 1700 }, 
-                    { month: 2, value: 2800 }, 
-                    { month: 3, value: 3200 }
-                ]
-            }];
-
-            const labels = baseData[0].set_data.map(v => v.month);
-            const dataSets = [];
-            baseData.forEach(o => dataSets.push({
-                label: o.location,
-                data: o.set_data.map(v => v.value),
-                borderColor: o.color,
-                borderWidth: 1,
-                fill: false
-            }));
-
+            var dataSets = [];
 
             const dataOneMinute = {
                 labels: labels,
@@ -232,13 +80,26 @@
                 type: 'line',
                 data: dataOneMinute,
                 options: {
+                    legend: {
+                        display: false
+                    },
+                    scales: {
+                        x: {
+                            position: 'right',
+                            beginAtZero: 0
+                        }
+                    },
                     title: {
-                        display: true,
-                        text: 'World population per region (in millions)'
+                        display: false
+                    },
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
                     },
                     plugins: {
                         legend: {
-                            position: 'bottom'
+                            position: 'bottom',
+                            //display: false
                         }
                     }
                 }
@@ -249,12 +110,160 @@
                 configOneMinute
             );
 
-            function setData(label, data) {
-                oneMinuteChart.data.labels.push(label);
-                oneMinuteChart.data.datasets.forEach((dataset) => {
-                    dataset.data.push(data);
+            //var refreshId = setInterval(function() {
+              //  console.log('start');
+            //    getData();
+              //  oneMinuteChart.update();
+            //}, 5000);
+        
+            
+            //setInterval(()=> {
+              //getData();
+            //}, 5000);
+
+            function getData() {
+
+                var backgroundColorForDataSets = ['rgba(150, 20, 10, 0)','rgba(220, 180, 50, 0)',  'rgba(55, 110, 180, 0)', 'rgba(50, 180, 120, 0)', 'rgba(120, 50, 180, 0)',
+                    'rgba(249, 49, 84, 0)', 'rgba(30, 150, 90, 0)', 'rgba(90, 30, 150, 0)','rgba(219, 19, 54, 0)', 'rgba(180, 25, 110, 0)',
+                    'rgba(200, 213 50, 0)',  'rgba(55, 150, 180, 0)','rgba(10, 120, 180, 0)','rgba(150, 180, 120, 0)', 'rgba(110, 155, 130, 0)',
+                    'rgba(155, 110, 130, 0)','rgba(155, 210, 130, 0)','rgba(110, 0, 128, 0)', 'rgba(138, 38, 238, 0)', 'rgba(238, 38, 138, 0)'
+                ];
+
+  		        var bordersColorForDataSets = ['rgba(150, 20, 10, 1)','rgba(220, 180, 50, 1)', 'rgba(55, 110, 180, 1)', 'rgba(50, 180, 120, 1)', 'rgba(120, 50, 180, 1)',
+                    'rgba(249, 49, 84, 1)', 'rgba(30, 150, 90, 1)', 'rgba(90, 30, 150, 1)', 'rgba(219, 19, 54, 1)', 'rgba(180, 25, 110, 1)',
+                    'rgba(200, 213 50, 1)', 'rgba(55, 150, 180, 1)', 'rgba(10, 120, 180, 1)','rgba(150, 180, 120, 1)', 'rgba(110, 155, 130, 1)',
+                    'rgba(155, 110, 130, 1)','rgba(155, 210, 130, 1)', 'rgba(110, 0, 128, 1)', 'rgba(138, 38, 238, 1)', 'rgba(238, 38, 138, 1)'
+                ];
+
+                //oneMinuteChart.data.datasets.forEach((dataset) => {
+                  //  dataset.data = [];      
+                    //dataset.label = [];      
+                //});                    
+
+                $.get('/last-date-value',
+                    function(res) {
+                        var tmpLabels = [];
+                        Object.entries(res[0]).forEach(([key, value]) => {
+                            tmpLabels.push(value.requested_timestamp);
+                        });
+                        oneMinuteChart.data.labels = tmpLabels;
+                    }
+                );
+
+                $.get('/last-power-value',
+                    function(data) {
+
+                        for (i = 0; i < data.length; i++) {
+                            var powerValue = [];
+                            var labelValue = [];
+                            var first_iteration = true;
+                            for (k = 0; k < data[i].length; k++) {
+                                //if (first_iteration) {
+                                //labelValue.push(data[i][0].client_name);
+                                //    first_iteration = false;
+                                //}
+                                
+                                powerValue.push(data[i][k].last_power_value)
+                            }
+
+                            var dataSet = {
+                                label: data[i][0].client_name,
+                                //label: 'Label-' + i,
+                                data: powerValue,
+                                backgroundColor: backgroundColorForDataSets[i],
+                                borderColor: bordersColorForDataSets[i],
+                            }
+
+                            oneMinuteChart.data.datasets.push(dataSet);    
+                            oneMinuteChart.update();
+                        
+                        }
+
+                        //setDataset(oneMinuteChart, deviceId9, title, values9, res.timestampsArray);
+
+                        //console.log(dataSet);
+
+                    }
+                );
+                
+            }
+
+            $("input.select-all").click(function () {
+                console.log('click all');
+                var all = $("input.select-all")[0];
+                //all.checked = !all.checked
+                var checked = all.checked;
+                $("input.select-item").each(function (index,item) {
+                    item.checked = checked;
+                    console.log(item);
                 });
-                oneMinuteChart.update();
+            });
+
+            $("input.select-all").click(function () {
+                var checked = this.checked;
+                $("input.select-item").each(function (index,item) {
+                    item.checked = checked;
+                });
+            });
+
+            $("input.select-item").click(function () {
+                var checked = this.checked;
+                console.log(checked);
+                checkSelected();
+            });
+
+            function checkSelected() {
+                var all = $("input.select-all")[0];
+                var total = $("input.select-item").length;
+                var len = $("input.select-item:checked:checked").length;
+                console.log("total:"+total);
+                console.log("len:"+len);
+                all.checked = len===total;
+            }
+
+            $("#selected").click(function () {
+                console.log("total");
+                var items=[];
+                $("input.select-item:checked:checked").each(function (index,item) {
+                    items[index] = item.value;
+                });
+                if (items.length < 1) {
+                    alert("no selected items!!!");
+                }else {
+                    var values = items.join(',');
+                    alert(values);
+                    //var html = $("<div></div>");
+                    //html.html("selected:"+values);
+                    //html.appendTo("body");
+                }
+            });
+
+            var setPv = $('.set-pv');
+            const clientId = document.querySelector('#client-id'),
+                valueSet = document.querySelector('#value-set'),
+                submitsetPv = document.querySelector('.btn-set');
+
+            submitsetPv.click(async e => await setPvClient());
+
+            async function getRangeClient() {
+                const url = '/admin/set-device';
+                
+                await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': $('input[name="_token"]').val(),
+                    },
+                    body: JSON.stringify({
+                        'clientId': clientId.value,
+                        'valueSet': valueSet.value
+                    })
+                })
+                .then(res => res.json())
+                .then(res => {
+                    console.log(res);
+                });
             }
 
         });

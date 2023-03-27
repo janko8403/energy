@@ -32,16 +32,14 @@ Auth::routes([
 
 Route::group(['prefix'=>'admin', 'middleware' => 'roles', 'roles' => ['Admin']], function() {
     Route::get('/dashboard', [AdminController::class, 'przywidz']);
-    // Route::get('/dashboard/przywidz', [AdminController::class, 'przywidz']);
     Route::get('/dashboard/mlawa', [AdminController::class, 'mlawa']);
     Route::get('/clients', [AdminController::class, 'client']);
     Route::post('/add-client', [AdminController::class, 'addClient']);
     Route::post('/edit-client', [AdminController::class, 'editClient']);
     Route::delete('/remove-client/{id}', [AdminController::class, 'removeClient']);
     Route::get('/measurement', [AdminController::class, 'measurement']);
-    // Route::get('/measurement2', [AdminController::class, 'measurement2']);
     Route::post('/filter-measurement', [AdminController::class, 'filterMeasurement']);
-    // Route::post('/filter-measurement2', [AdminController::class, 'filterMeasurement2']);
+    Route::post('/set-device', [AdminController::class, 'setPv']);
     Route::get('/logs', [AdminController::class, 'logs']);
 });
 Route::get('/last-power-value', [AdminController::class, 'lastPowerValue']);

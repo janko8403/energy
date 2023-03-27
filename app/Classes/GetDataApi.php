@@ -8,9 +8,9 @@ class GetDataApi {
 
     protected $email;
     protected $password;
-    private const API_EMAIL = '';
-    private const API_PASSWORD = '';
-    private const URL_ENSPIRION = '';
+    private const API_EMAIL = 'enspirion';
+    private const API_PASSWORD = 'fds543fs';
+    private const URL_ENSPIRION = 'https://enspirion.pl';
 
     public function __construct()
     {
@@ -20,8 +20,6 @@ class GetDataApi {
 
     public function getDataDevice($clientId, $deviceAddress)
     {
-
-        // dd($this->email);
         if(isset($deviceAddress)) {
             $deviceAddress = $deviceAddress;
         } else {
@@ -31,8 +29,6 @@ class GetDataApi {
         $device = $deviceAddress;
         $deviceAddress = $deviceAddress . '/';
         $url = $deviceAddress . 'login';
-
-        // dd($deviceAddress);
 
         $curl = curl_init($deviceAddress.'login');
         curl_setopt($curl, CURLOPT_URL, $url);

@@ -18,6 +18,6 @@ class Pv extends Model
 
     public function configuration()
     {
-        return $this->belongsTo(Configuration::class, 'area_id');
+        return $this->belongsTo(Configuration::class, 'pv_id');
     }
 }

@@ -68,6 +68,8 @@
 
 @push('custom-scripts')
     <script src="{{ asset('admin/lib/jquery.niftymodals/js/jquery.niftymodals.js') }}" type="text/javascript"></script>
+    <link href="{{ asset('admin/lib/datatables/datatables.net-bs4/css/dataTables.bootstrap4.css') }}" rel="stylesheet">
+    <link href="{{ asset('admin/lib/datatables/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}" rel="stylesheet">
     <script src="https://cdn.datatables.net/1.13.3/js/jquery.dataTables.min.js" type="text/javascript"></script>
     <script src="https://cdn.datatables.net/1.13.3/js/dataTables.bootstrap5.min.js" type="text/javascript"></script>
 
@@ -82,7 +84,7 @@
 
             var table = $('#client-table').DataTable({
                 processing: true,
-                erverSide: true,
+                serverSide: true,
                 //search: {
                   //  return: true,
                 //},

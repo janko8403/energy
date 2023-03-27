@@ -15,8 +15,6 @@
         
         <link href="{{ asset('admin/lib/material-design-icons/css/material-design-iconic-font.min.css') }}" rel="stylesheet"/>
         <link href="{{ asset('admin/css/app.css') }}" rel="stylesheet">
-        <link href="{{ asset('admin/lib/datatables/datatables.net-bs4/css/dataTables.bootstrap4.css') }}" rel="stylesheet">
-        <link href="{{ asset('admin/lib/datatables/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}" rel="stylesheet">
         
 	</head>
 	<body>

@@ -28,10 +28,12 @@
                 <td><span></span></td>
                 <td><span></span></td>
                 <td class="text-right d-flex">
-                    <a class="btn btn-space btn-secondary btn-xs mr-2 cursor-pointer">ON</a>
-                    <a class="btn btn-space btn-secondary btn-xs mr-2 cursor-pointer">OFF</a>
-                    <input class="form-control form-control-xs mr-3 input-range" type="number" value="100" max="100">
-                    <a class="btn btn-space btn-secondary btn-xs mr-2 cursor-pointer">SET</a>
+                    <a class="btn btn-space btn-secondary btn-xs mr-2 cursor-pointer btn-on-all">ON</a>
+                    <a class="btn btn-space btn-secondary btn-xs mr-2 cursor-pointer btn-off-all">OFF</a>
+                    <form class="set-pv-all d-flex">
+                        <input class="form-control form-control-xs mr-3 input-range" type="number" id="value-set" value="100" max="100">
+                        <a class="btn btn-space btn-secondary btn-xs mr-2 cursor-pointer btn-set-all">SET</a>
+                    </form>
                 </td>
             </tr>
             @foreach($clients_with_relations as $client)
@@ -47,10 +49,13 @@
                     <td><span>{{$client->mocUmowna}}</span></td>
                     <td><span>{{$client->generacja}}</span></td>
                     <td class="text-right d-flex">
-                        <a class="btn btn-space btn-secondary btn-xs mr-2 cursor-pointer">ON</a>
-                        <a class="btn btn-space btn-secondary btn-xs mr-2 cursor-pointer">OFF</a>
-                        <input class="form-control form-control-xs mr-3 input-range" type="number" value="100" max="100">
-                        <a class="btn btn-space btn-secondary btn-xs mr-2 cursor-pointer">SET</a>
+                        <a class="btn btn-space btn-secondary btn-xs mr-2 cursor-pointer btn-on">ON</a>
+                        <a class="btn btn-space btn-secondary btn-xs mr-2 cursor-pointer btn-off">OFF</a>
+                        <form class="set-pv d-flex">
+                            <input type="hidden" id="client-id" value="{{$client->id}}">
+                            <input class="form-control form-control-xs mr-3 input-range" type="number" id="value-set" value="100" max="100">
+                            <a class="btn btn-space btn-secondary btn-xs mr-2 cursor-pointer btn-set">SET</a>
+                        </form>
                     </td>
                 </tr>
             @endforeach

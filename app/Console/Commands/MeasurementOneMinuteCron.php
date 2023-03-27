@@ -39,7 +39,7 @@ class MeasurementOneMinuteCron extends Command
         info("Cron Job running at ". now()); 
 
         $configurations = Configuration::all();
-
+        $date_timestamp = date("Y-m-d H:i:s");
         foreach ($configurations as $value) {
 
             if($value->id != 99) {
@@ -114,7 +114,7 @@ class MeasurementOneMinuteCron extends Command
                             'last_power_set_active' => $last_power_set_active,
                             'last_frequency' => $last_frequency,
                             'energy_data' => $energy_data,
-                            'requested_timestamp' => date("Y-m-d H:i:s")
+                            'requested_timestamp' => $date_timestamp
                         ]
                     );
                 } catch (\PDOException $th) {

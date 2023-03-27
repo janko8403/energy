@@ -8,7 +8,12 @@ use Stevebauman\Purify\Facades\Purify;
 use App\Http\Requests\ClientRequest;
 use App\Repositories\Interfaces\AdminRepositoryInterface;
 use DataTables;
-
+use Illuminate\Validation\Rule;
+use App\Enums\ActionMeasurement;
+use App\Incoming\Factory;
+use Redirect;
+use App\Exports\MeasurementExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 use App\Models\{Configuration, Log, Pv, Area, MeasurementOneMinute, MeasurementFifteenMinute, MeasurementOneHour};
 use App\Classes\GetDataApi;
@@ -18,9 +23,11 @@ class AdminController extends Controller
     public function __construct(
         private readonly AdminRepositoryInterface $adminRepository,
         private readonly ClientRequest $clientRequest,
-        private readonly GetDataApi $getDataApi
+        private readonly GetDataApi $getDataApi,
+        private Factory $factory
     )
     {
+        $this->factory = $factory;    
     }
 
     public function suma()
@@ -30,8 +37,10 @@ class AdminController extends Controller
 
     public function przywidz()
     {
-        $clients = $this->adminRepository->getClients();
-        return view('admin.przywidz', compact('clients'));
+        $clients = $this->adminRepository->getNameByClient();
+        $clients_with_relations = $this->adminRepository->getyClientWithRelations();
+        // dd($clients);
+        return view('admin.przywidz', compact('clients', 'clients_with_relations'));
     }
 
     public function mlawa()
@@ -80,8 +89,6 @@ class AdminController extends Controller
     public function editClient(Request $request)
     {
         $validated = $this->clientRequest->validate($request->all());
-        //xss protection!
-        // $cleaned = Purify::clean($validated);
         return response()->json($this->adminRepository->updateClient($validated, $request->id, $request->pv_id));
     }
 
@@ -93,8 +100,36 @@ class AdminController extends Controller
 
     public function measurement()
     {
-        return view('admin.measurement');
+        $clients = $this->adminRepository->getNameByClient();
+        return view('admin.measurement', compact('clients'));
     }
+
+    public function filterMeasurement(Request $request)
+    {
+        $validated = $request->validate([
+            'from' => 'required|date',
+            'to' => 'required|date|after:from',
+            'clients' => 'required',
+            'resolution' => ['required', Rule::in(array_map(fn($a) => $a->value, ActionMeasurement::cases()))]
+        ],['from.required' => 'Data od jest wymagane', 'to.required' => 'Data do jest wymagane', 'to.after' => 'Data do musi byc większa niż Data od', 'clients.required' => 'Wybierz klienta', 'resolution.in' => 'Wybrana rozdzielczośc jest nieprawidłowa', 'resolution.required' => 'Wybierz rozdzielczość']);
+        
+        return Excel::download(new MeasurementExport($request), 'measurement-'.date('Y-m-d').'.xlsx');
+    }
+
+    // public function filterMeasurement(Request $request)
+    // {
+    //     $validated = $request->validate([
+    //         'from' => 'required|date',
+    //         'to' => 'required|date|after:from',
+    //         'clients.*' => 'required',
+    //         'resolution' => ['required', Rule::in(array_map(fn($a) => $a->value, ActionMeasurement::cases()))]
+    //     ],['from.required' => 'Data od jest wymagane', 'to.required' => 'Data do jest wymagane', 'to.after' => 'Data do musi byc większa niż Data od', 'clients.0.required' => 'Wybierz klienta', 'resolution.in' => 'Wybrana rozdzielczośc jest nieprawidłowa', 'resolution.required' => 'Wybierz rozdzielczość']);
+
+    //     $action = $this->factory->create(ActionMeasurement::from($validated['resolution']));
+    //     $data = $action->execute($request);
+
+    //     return $data;
+    // }
 
     public function logs()
     {
@@ -105,7 +140,7 @@ class AdminController extends Controller
     public function cron()
     {
         $configurations = Configuration::all();
-
+        $date_timestamp = date("Y-m-d H:i:s");
         foreach ($configurations as $value) {
 
             if($value->id != 99) {
@@ -184,7 +219,7 @@ class AdminController extends Controller
                             'last_power_set_active' => $last_power_set_active,
                             'last_frequency' => $last_frequency,
                             'energy_data' => $energy_data,
-                            'requested_timestamp' => date("Y-m-d H:i:s")
+                            'requested_timestamp' => $date_timestamp
                         ]
                     );
                 } catch (\PDOException $th) {
@@ -203,8 +238,19 @@ class AdminController extends Controller
         // return MeasurementOneHour::all();
     }
 
-    public function lastPowerValue($id)
+    public function lastPowerValue()
     {
-        return $this->adminRepository->getPowerValue($id);
+        return $this->adminRepository->getPowerValue();
+    }
+
+    public function lastDateValue()
+    {
+        return $this->adminRepository->getLabelDate();
+    }
+
+    public function setPv(Request $request)
+    {
+        $device = $this->adminRepository->setDevice($request);
+        return response()->json($device);
     }
 }

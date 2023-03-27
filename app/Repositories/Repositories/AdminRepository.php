@@ -6,6 +6,7 @@ use App\Models\{Configuration, Area, Pv, Log, MeasurementOneMinute, MeasurementF
 use App\Repositories\Interfaces\AdminRepositoryInterface;
 use Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class AdminRepository implements AdminRepositoryInterface
 {
@@ -77,22 +78,96 @@ class AdminRepository implements AdminRepositoryInterface
         return Log::all();
     }
 
-    public function getPowerValue(int $id)
+    public function getPowerValue()
     {
-        $date = Carbon::now()->subHour(3);
-    
-        $measurements = MeasurementOneMinute::select(
-                "measurement_one_minutes.requested_timestamp", 
-                "measurement_one_minutes.last_power_value",
-                "configurations.nazwaOdbiorcy as client_name",
-                "configurations.id as client_id"
-            )
-            ->leftJoin("configurations", "configurations.id", "=", "measurement_one_minutes.client_id")
-            ->where('created_at', '>=', $date)
-            ->where('client_id', $id)
-            ->orderBy('created_at')
-            ->get();
+        $configurations = Configuration::all();
 
-        return $measurements;
+        $date = Carbon::now()->subHour(12);
+
+        $arrMeasurement = [];
+        foreach ($configurations as $value) {
+    
+            $measurement = MeasurementOneMinute::select(
+                    // "configurations.id as client_id",
+                    "configurations.nazwaOdbiorcy as client_name",
+                    "measurement_one_minutes.last_power_value",
+                    // "measurement_one_minutes.requested_timestamp" 
+                )
+                ->leftJoin("configurations", "configurations.id", "=", "measurement_one_minutes.client_id")
+                ->where('created_at', '>=', $date)
+                ->where('client_id', $value->id)
+                ->whereNotNull(['requested_timestamp', 'last_power_value'])
+                ->orderBy('created_at', 'DESC')
+                ->limit(5)
+                ->get();
+
+            if ($measurement->isNotEmpty()) {
+                $arrMeasurement[] = $measurement;
+            }
+
+        }
+
+        return $arrMeasurement;
+    }
+
+    public function getLabelDate()
+    {
+        $date = Carbon::now()->subHour(12);
+
+        $configurations = Configuration::all();
+
+        $arrDate = [];
+        foreach ($configurations as $value) {
+            $getDate = MeasurementOneMinute::select(
+                    "configurations.id as client_id",
+                    "measurement_one_minutes.requested_timestamp" 
+                )
+                ->leftJoin("configurations", "configurations.id", "=", "measurement_one_minutes.client_id")
+                ->where('created_at', '>=', $date)
+                ->where('client_id', $value->id)
+                ->whereNotNull(['requested_timestamp', 'last_power_value'])
+                ->orderBy('created_at', 'ASC')
+                ->limit(10)
+                ->get();
+
+                if ($getDate->isNotEmpty()) {
+                    $arrDate[] = $getDate;
+                }
+
+        }
+
+        return $arrDate;
+    }
+
+    public function getNameByClient()
+    {
+        $clients = Configuration::select(
+                'id',
+                'nazwaOdbiorcy'
+            )
+            // ->limit(5)
+            ->get();
+        return $clients;
+    }
+
+    public function getyClientWithRelations()
+    {
+        $clients = Configuration::select(
+                'configurations.id',
+                'nazwaOdbiorcy',
+                'mocUmowna',
+                'areas.area as area',
+                'pvs.generacja as generacja'
+            )
+            ->leftJoin("areas", "areas.id", "=", "configurations.area_id")
+            ->leftJoin("pvs", "pvs.id", "=", "configurations.pv_id")
+            ->get();
+        
+        return $clients;
+    }
+
+    public function setDevice($data)
+    {
+        dd($data);
     }
 }

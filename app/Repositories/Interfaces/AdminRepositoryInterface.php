@@ -16,5 +16,9 @@ interface AdminRepositoryInterface
     public function getArea(int $id);
     public function getPvGeneration(int $id);
     public function getPvIp(int $id);
-    public function getPowerValue(int $id);
+    public function getPowerValue();
+    public function getLabelDate();
+    public function getNameByClient();
+    public function getyClientWithRelations();
+    public function setDevice($data);
 }
