@@ -22,17 +22,13 @@ Route::get('/clear-cache', function() {
 
 
 Route::get('/', function () {
-     if (auth()->check()) {
-        return redirect('admin/dashboard');
-    }
+    if( auth()->check()) return redirect('admin/dashboard');
     return view('auth.login');
 });
 
 Auth::routes([
   'register' => false,
 ]);
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::group(['prefix'=>'admin', 'middleware' => 'roles', 'roles' => ['Admin']], function() {
     Route::get('/dashboard', [AdminController::class, 'przywidz']);
@@ -43,8 +39,13 @@ Route::group(['prefix'=>'admin', 'middleware' => 'roles', 'roles' => ['Admin']],
     Route::post('/edit-client', [AdminController::class, 'editClient']);
     Route::delete('/remove-client/{id}', [AdminController::class, 'removeClient']);
     Route::get('/measurement', [AdminController::class, 'measurement']);
+    // Route::get('/measurement2', [AdminController::class, 'measurement2']);
+    Route::post('/filter-measurement', [AdminController::class, 'filterMeasurement']);
+    // Route::post('/filter-measurement2', [AdminController::class, 'filterMeasurement2']);
     Route::get('/logs', [AdminController::class, 'logs']);
 });
-Route::get('/last-power-value/{id}', [AdminController::class, 'lastPowerValue']);
+Route::get('/last-power-value', [AdminController::class, 'lastPowerValue']);
+Route::get('/last-date-value', [AdminController::class, 'lastDateValue']);
 Route::get('/cron', [AdminController::class, 'cron']);
 Route::get('/getcron', [AdminController::class, 'getcron']);
+
